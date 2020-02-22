@@ -20,10 +20,15 @@
 // utility functions to extract information from a spirv::ModuleOp.
 //
 //===----------------------------------------------------------------------===//
+
 #include "pmlc/tools/pmlc-vulkan-runner/vulkan_runner.h"
-#include "pmlc/tools/pmlc-vulkan-runner/vulkan_fn.h"
 
 #include <string>
+
+#include "loader/loader.h"
+// #include "pmlc/tools/pmlc-vulkan-runner/vulkan_fn.h"
+
+using namespace mlir; // NOLINT
 
 namespace pmlc::vulkan {
 

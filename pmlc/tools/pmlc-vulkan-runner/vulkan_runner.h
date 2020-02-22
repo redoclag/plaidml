@@ -1,6 +1,5 @@
 #pragma once
 
-#define VK_NO_PROTOTYPES
 #include <vulkan/vulkan.h>
 
 #include "mlir/Analysis/Passes.h"
@@ -12,44 +11,44 @@
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Support/ToolOutputFile.h"
 
-using namespace mlir; // NOLINT[build/namespaces]
+namespace pmlc::vulkan {
+
 using DescriptorSetIndex = uint32_t;
 using BindingIndex = uint32_t;
 
-namespace pmlc::vulkan {
 /// Struct containing information regarding to a device memory buffer.
 struct VulkanDeviceMemoryBuffer {
-  BindingIndex bindingIndex{0};
-  VkDescriptorType descriptorType{VK_DESCRIPTOR_TYPE_MAX_ENUM};
-  VkDescriptorBufferInfo bufferInfo{VK_NULL_HANDLE};
-  VkBuffer buffer{VK_NULL_HANDLE};
-  VkDeviceMemory deviceMemory{VK_NULL_HANDLE};
+  BindingIndex bindingIndex = 0;
+  VkDescriptorType descriptorType = VK_DESCRIPTOR_TYPE_MAX_ENUM;
+  VkDescriptorBufferInfo bufferInfo;
+  VkBuffer buffer;
+  VkDeviceMemory deviceMemory;
 };
 
 /// Struct containing information regarding to a host memory buffer.
 struct VulkanHostMemoryBuffer {
   /// Pointer to a host memory.
-  void *ptr{nullptr};
+  void *ptr = nullptr;
   /// Size of a host memory in bytes.
-  uint32_t size{0};
+  uint32_t size = 0;
 };
 
 /// Struct containing the number of local workgroups to dispatch for each
 /// dimension.
 struct NumWorkGroups {
-  uint32_t x{1};
-  uint32_t y{1};
-  uint32_t z{1};
+  uint32_t x = 1;
+  uint32_t y = 1;
+  uint32_t z = 1;
 };
 
 /// Struct containing information regarding a descriptor set.
 struct DescriptorSetInfo {
   /// Index of a descriptor set in descriptor sets.
-  DescriptorSetIndex descriptorSet{0};
+  DescriptorSetIndex descriptorSet = 0;
   /// Number of desriptors in a set.
-  uint32_t descriptorSize{0};
+  uint32_t descriptorSize = 0;
   /// Type of a descriptor set.
-  VkDescriptorType descriptorType{VK_DESCRIPTOR_TYPE_MAX_ENUM};
+  VkDescriptorType descriptorType = VK_DESCRIPTOR_TYPE_MAX_ENUM;
 };
 
 /// VulkanHostMemoryBuffer mapped into a descriptor set and a binding.
@@ -62,7 +61,8 @@ using ResourceStorageClassData =
     llvm::DenseMap<DescriptorSetIndex,
                    llvm::DenseMap<BindingIndex, mlir::spirv::StorageClass>>;
 
-LogicalResult runOnVulkan(mlir::ModuleOp module, ResourceData &resourceData,
-                          const NumWorkGroups &numWorkGroups);
+mlir::LogicalResult runOnVulkan(mlir::ModuleOp module,
+                                ResourceData &resourceData,
+                                const NumWorkGroups &numWorkGroups);
 
 } // namespace pmlc::vulkan

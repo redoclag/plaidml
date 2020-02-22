@@ -1,7 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-#load("//bzl:plaidml.bzl", "plaidml_cc_library", "plaidml_cc_binary")
-
 filegroup(
     name = "NORMAL_LOADER_SRCS",
     srcs = [
@@ -49,7 +47,7 @@ cc_binary(
         "loader/generated",
     ],
     deps = [
-        "@vulkan_headers//:inc",
+        "@vulkan_headers",
     ],
 )
 
@@ -57,10 +55,10 @@ cc_binary(
 genrule(
     name = "gen_asm",
     outs = ["gen_defines.asm"],
-    cmd = "\n".join([
-        " $(location :asm_offset) GAS ",
-        " cp gen_defines.asm $@ ",
-    ]),
+    cmd = """
+$(location :asm_offset) GAS
+cp gen_defines.asm $@
+""",
     tools = [
         ":asm_offset",
     ],
@@ -84,6 +82,17 @@ cc_library(
     copts = [
         "-I loader",
     ],
+    defines = [
+        "API_NAME=\\\"Vulkan\\\"",
+    ] + select({
+        "@bazel_tools//src/conditions:windows": [
+            "VK_USE_PLATFORM_WIN32_KHR",
+            "WIN32_LEAN_AND_MEAN",
+        ],
+        "//conditions:default": [
+            "VK_USE_PLATFORM_XCB_KHR",
+        ],
+    }),
     includes = [
         "loader",
         "loader/generated",
@@ -93,6 +102,6 @@ cc_library(
         "-lm",
     ],
     deps = [
-        "@vulkan_headers//:inc",
+        "@vulkan_headers",
     ],
 )

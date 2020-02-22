@@ -2,6 +2,7 @@
 workspace(name = "com_intel_plaidml")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//bzl:repo_utils.bzl", "maybe")
 
 # define this first in case any repository rules want to use it
 http_archive(
@@ -54,3 +55,10 @@ latex_repositories()
 # load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
 
 # llvm_register_toolchains()
+
+load("//vendor/vulkan_sdk:repo.bzl", "vulkan_sdk_setup")
+
+maybe(
+    vulkan_sdk_setup,
+    name = "vulkan_sdk",
+)
