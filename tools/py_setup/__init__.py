@@ -18,6 +18,10 @@ def bazel_stage():
             zf.extractall(stage)
         src_path = stage / 'runfiles'
         src_path.rename(tgt_path)
+    elif sys.platform == 'darwin':
+        src_path = src_root.with_suffix('.runfiles')
+        # TODO: tgt_path need to specified
+        shutil.copytree(src_path, tgt_root)    
     else:
         src_path = src_root.with_suffix('.runfiles')
         shutil.copytree(src_path, tgt_path)
